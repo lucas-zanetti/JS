@@ -3,8 +3,8 @@ class CalcController{
     constructor(){
         this._locale = navigator.languages && navigator.languages.length ? navigator.languages[0] : navigator.language;
         this._displayCalcEl = document.querySelector('#display');
-        this._dateEl = document.querySelector('#data');
-        this._timeEl = document.querySelector('#hora');
+        this._dateEl = document.querySelector('#date');
+        this._timeEl = document.querySelector('#time');
         this._currentDate;
         this.initialize();
         this.initButtonsEvent();
