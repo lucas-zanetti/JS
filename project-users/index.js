@@ -4,7 +4,7 @@ var user = {};
 function addLine(dataUser){
     document.getElementById('table-users').innerHTML = `
         <tr>
-            <td><img src="${dataUser.photo}" alt="User Image" class="img-circle img-sm"></td>
+            <td><img src="dist/img/user1-128x128.jpg" alt="User Image" class="img-circle img-sm"></td>
             <td>${dataUser.name}</td>
             <td>${dataUser.email}</td>
             <td>${dataUser.admin}</td>
@@ -28,6 +28,8 @@ document.getElementById('form-user-create').addEventListener('submit', event =>{
             user[field.name] = field.value;
         }
     });
+
+    var objectUser = new User(user.name, user.gender, user.birth, user.country, user.email, user.photo, user.admin);
     
-    addLine(user);
+    addLine(objectUser);
 })
