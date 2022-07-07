@@ -143,7 +143,13 @@ class CalcController{
     }
 
     getResult(){
-        return eval(this.concatenateOperation());
+        try {
+            return eval(this.concatenateOperation());
+        } catch (e) {
+            setTimeout(() => {
+                this.setError();
+            }, 10);
+        }
     }
 
     calculate(){
@@ -337,6 +343,10 @@ class CalcController{
     }
 
     set displayCalc(value){
+        if(value.toString().length > 10){
+            this.setError();
+            return;
+        }
         this._displayCalcEl.innerHTML = value;
     }
 
