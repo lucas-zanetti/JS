@@ -10,6 +10,7 @@ class User {
         this._photo = photo;
         this._admin = admin;
         this._register = new Date();
+        this._id;
     }
 
     get name(){
@@ -84,6 +85,14 @@ class User {
         this._register = value;
     }
 
+    get id(){
+        return this._id;
+    }
+
+    set id(value){
+        this._id = value;
+    }
+
     loadFromJSON(json){
         for (let name in json){
             if (name == '_register'){
@@ -92,5 +101,39 @@ class User {
                 this[name] = json[name];
             }
         }
+    }
+
+    static getUsersStorage(){
+        let users = [];
+
+        if(localStorage.getItem('users')) users = JSON.parse(localStorage.users);
+
+        return users;
+    }
+
+    getNewId(){
+        if (!window.id) window.id = 0;
+
+        id++
+
+        return id;
+    }
+
+    save(){
+        let users = User.getUsersStorage();
+
+        if (this.id > 0){
+            users.map(u=>{
+                if (u._id == this.id) Object.assign(u, this);
+
+                return u;
+            });
+        } else {
+            this.id = this.getNewId();
+
+            users.push(this);
+        }
+
+        localStorage.setItem("users", JSON.stringify(users));
     }
 }
