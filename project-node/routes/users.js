@@ -1,4 +1,6 @@
 let NeDB = require('nedb');
+const { body, validationResult } = require('express-validator');
+
 let db = new NeDB({
     filename: 'users.db',
     autoload: true
@@ -19,15 +21,29 @@ module.exports = (app) => {
         });
     });
     
-    route.post((req, res)=>{    
-        db.insert(req.body, (err, user)=>{
-            if (err){
-                app.utils.error.send(err, req, res);
-            } else {
-                res.status(201).json(user);
+    route.post(
+        [
+        body('name').notEmpty().withMessage('O nome é obrigatório.'),
+        body('email').notEmpty().withMessage('O email é obrigatório.'),
+        body('email').isEmail().withMessage('O email não é valido.')
+        ], 
+        (req, res)=>{
+            let errors = validationResult(req).formatWith(({msg})=>msg);
+
+            if(!errors.isEmpty()){
+                app.utils.error.send(errors, req, res);
+                return false;
             }
-        });        
-    });
+
+            db.insert(req.body, (err, user)=>{
+                if (err){
+                    app.utils.error.send(err, req, res);
+                } else {
+                    res.status(201).json(user);
+                }
+            });
+        }
+    );
 
     let routeId = app.route('/users/:id');
 
