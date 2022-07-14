@@ -9,6 +9,7 @@
   "author": "Lucas Zanetti",
   "license": "ISC",
   "dependencies": {
+    "consign": "^0.1.6",
     "express": "^4.18.1"
   }
 }
