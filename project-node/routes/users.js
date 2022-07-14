@@ -16,14 +16,12 @@ module.exports = (app) => {
         });
     });
     
-    app.get('/users/admin', (req, res)=>{
+    app.post('/users', (req, res)=>{
         console.log('URL: ', req.url);
         console.log('METHOD: ', req.method);
     
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
-        res.json({
-            users: []
-        });
+        res.json(req.body);
     });
 }
