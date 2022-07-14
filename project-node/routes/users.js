@@ -8,8 +8,6 @@ module.exports = (app) => {
     let route = app.route('/users');
 
     route.get((req, res)=>{
-        res.setHeader('Content-Type', 'application/json');
-            
         db.find({}).sort({name:1}).exec((err, users)=>{
             if (err){
                 app.utils.error.send(err, req, res);
@@ -22,8 +20,6 @@ module.exports = (app) => {
     });
     
     route.post((req, res)=>{    
-        res.setHeader('Content-Type', 'application/json');
-        
         db.insert(req.body, (err, user)=>{
             if (err){
                 app.utils.error.send(err, req, res);
@@ -36,8 +32,6 @@ module.exports = (app) => {
     let routeId = app.route('/users/:id');
 
     routeId.get((req, res)=>{
-        res.setHeader('Content-Type', 'application/json');
-            
         db.findOne({_id: req.params.id}).exec((err, user)=>{
             if (err){
                 app.utils.error.send(err, req, res);
