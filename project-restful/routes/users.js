@@ -23,9 +23,9 @@ module.exports = (app) => {
     
     route.post(
         [
-        body('name').notEmpty().withMessage('O nome é obrigatório.'),
-        body('email').notEmpty().withMessage('O email é obrigatório.'),
-        body('email').isEmail().withMessage('O email não é valido.')
+        body('_name').notEmpty().withMessage('O nome é obrigatório.'),
+        body('_email').notEmpty().withMessage('O email é obrigatório.'),
+        body('_email').isEmail().withMessage('O email não é valido.')
         ], 
         (req, res)=>{
             let errors = validationResult(req).formatWith(({msg})=>msg);
