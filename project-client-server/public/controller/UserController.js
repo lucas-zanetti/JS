@@ -44,17 +44,17 @@ class UserController {
 
                     user.loadFromJSON(result);
 
-                    user.save();
+                    user.save().then(user =>{
+                        this.getTr(user, tr);
 
-                    this.getTr(user, tr);
+                        this.updateCount();
 
-                    this.updateCount();
+                        this.formUpdateEl.reset();
 
-                    this.formUpdateEl.reset();
+                        submitButton.disabled = false;
 
-                    submitButton.disabled = false;
-
-                    this.showPanelCreate();
+                        this.showPanelCreate();
+                    });
                 },
                 (e)=>{
                     console.log(e);
@@ -79,13 +79,13 @@ class UserController {
                 (content)=>{
                     values.photo = content;
 
-                    values.save();
+                    values.save().then(user =>{
+                        this.addLine(user);
 
-                    this.addLine(values);
+                        this.formEl.reset();
 
-                    this.formEl.reset();
-
-                    submitButton.disabled = false;
+                        submitButton.disabled = false;
+                    });
                 },
                 (e)=>{
                     console.log(e);
