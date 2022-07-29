@@ -126,9 +126,14 @@ class DropBoxController{
         this.inputFilesEl.addEventListener('change', event=>{
             this.btnSendFileEl.disabled = true;
 
-            this.uploadTask(event.target.files).then(responses =>{
-                responses.forEach(resp =>{
-                    this.getFirebaseRef().push().set(resp.files['input-file']);
+            this.uploadTask(event.target.files).then(responses=>{
+                responses.forEach(resp=>{
+                    this.getFirebaseRef().push().set({
+                        originalFilename: resp.name,
+                        mimetype: resp.type,
+                        filepath: resp.path,
+                        size: resp.size
+                    });
                 });
 
                 this.uploadComplete();
@@ -185,21 +190,41 @@ class DropBoxController{
         let promises = [];
 
         [...files].forEach(file=>{
-            let formData = new FormData();
+            promises.push(new Promise((resolve, reject)=>{
+                let fileRef = firebase.storage().ref(this.currentFolder.join('/')).child(file.name);
 
-            formData.append('input-file', file);
+                let task = fileRef.put(file);
 
-            promises.push(this.ajax(
-                '/upload', 
-                'POST', 
-                formData, 
-                ()=>{
-                    this.uploadProgress(event, file);
-                }, 
-                ()=>{
-                    this.startUploadTime = Date.now();
-                }
-            ));
+                task.on(
+                    'state_changed',
+                    snapshot=>{
+                        this.uploadProgress({
+                            loaded: snapshot.bytesTransferred,
+                            total: snapshot.totalBytes
+                        }, file);
+                    },
+                    error=>{
+                        console.error(error);
+                        reject(error);
+                    },
+                    ()=>{
+                        fileRef.getMetadata().then(metadata=>{
+                            fileRef.getDownloadURL().then(url=>{
+                                resolve({
+                                    name: metadata.name,
+                                    path: url,
+                                    size: metadata.size,
+                                    type: metadata.contentType
+                                });
+                            }).catch(err=>{
+                                reject(err);
+                            });
+                        }).catch(err=>{
+                            reject(err);
+                        });
+                    }
+                );
+            }));
         })
 
         return Promise.all(promises);
@@ -477,7 +502,7 @@ class DropBoxController{
                     this.openFolder();
                     break;
                 default:
-                    window.open('/file?path=' + file.filepath);
+                    window.open(file.filepath);
             }
         });
 
