@@ -246,7 +246,7 @@ class WhatsAppController {
 
                 let cursor = window.getSelection();
 
-                if (!cursor || !cursor.focusNode || !(cursor.focusNode.id == 'input-text')){
+                if (!cursor.focusNode || !(cursor.focusNode.id == 'input-text')){
                     this.el.inputText.focus();
                     cursor = window.getSelection();
                 }
